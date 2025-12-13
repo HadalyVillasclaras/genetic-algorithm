@@ -2,7 +2,7 @@ import { DNA } from "./DNA.js";
 import p5js from 'p5';
 let p5;
 
-//Genetic Algorithm, Evolving Shakespeare
+//Genetic Algorithm, Evolving text
 // Demonstration of using genetic algorithm to perform a search
 
 /**
