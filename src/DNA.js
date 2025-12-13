@@ -1,3 +1,15 @@
+/**
+ * A class to describe a pseudo-DNA, i.e. genotype
+ * Here, a virtual organism's DNA is an array of character
+ * 
+ * Functionality:
+ *  -- convert DNA into a string
+ *  -- calculate DNA's "fitness"
+ *  -- mate DNA with another set of DNA
+ *  -- mutate DNA
+ */
+
+
 export class DNA {
   constructor (length) {
     this.genes = [];
@@ -5,7 +17,6 @@ export class DNA {
 
     for(let i = 0; i < length; i++) {
       this.genes[i] = randomCharacter();
-
     }
   }
 
@@ -20,10 +31,50 @@ export class DNA {
     // fitness is equal to correct no. characters / total characters
     this.fitness = score / target.length;
   }
+
+   getPhrase() {
+    return this.genes.join("");
+  }
+  
+  crossover(partner) {
+    // The child is a new instance of DNA
+    // Note that the genes are generated randomly in DNA constructor,
+    // but the crossover function will override the array
+    let child = new DNA(this.genes.length);
+
+    // Pick a random midpoint in the genes array
+    let midpoint = Math.floor(Math.random() * this.genes.length);
+
+    for(let i = 0; i < this.genes.length; i++) {
+      if (i > midpoint) {
+        child.genes[i] = this.genes[i];
+      } else {
+        child.genes[i] = partner.genes[i];
+      }
+    }
+
+    return child;
+  }
+
+  mutate(mutationRate) {
+    for (let i = 0; i < this.genes.length; i++) {
+      if (Math.random() < mutationRate) {
+        //{!1} Mutation, a new random character
+        this.genes[i] = randomCharacter();
+      }
+      
+    }
+  }
 }
 
 function randomCharacter() {
-  let character = Math.floor(Math.random(32, 127));
+  let minRange = 32;
+  let maxRange = 127;
+  let totalNumbers = maxRange -  minRange; //95
+  let initialValueToStartCounting = minRange;
+
+  //get a number between 32 and 127
+  let character = Math.floor(Math.random() * (totalNumbers)) + initialValueToStartCounting; 
   // String.fromCharCode is a JS method that converts a number into its corresponding character in the ASCII
   return String.fromCharCode(character);
 }

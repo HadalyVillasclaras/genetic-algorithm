@@ -32,28 +32,33 @@ let p5;
  * 
  */
 
+let mutationRate = 0.01;
+let populationSize = 150;
+
 let population = [];
-let matingPool = [];
 let target = "to be or not to be";
 
 function setup() {
-  p5.createCanvas(400, 400);
+  p5.createCanvas(700, 400);
 
   // Step 1: Population creation
-  for(let i = 0; i < 100; i++) {
-    population[i] = new DNA(18);
+  for (let i = 0; i < populationSize; i++) {
+    population[i] = new DNA(target.length);
   }
-
- 
-
 }
 
-function draw(){
-  p5.background(200);
-  // step 2: calculate fitness for each subsequent generation
+function draw() {
+
+  // Step 2: Selection
+  // Calculate fitness
   for (let phrase of population) {
     phrase.calculateFitness(target);
+  }
 
+  // Build mating pool
+  let matingPool = [];
+  for (let phrase of population) {
+    // Add each member n times according to its fitness score
     let n = Math.floor(phrase.fitness * 100);
 
     for (let j = 0; j < n; j++) {
@@ -61,7 +66,33 @@ function draw(){
     }
   }
 
-  p5.square(12, 200, 30)
+  // Step 3: Reproduction
+  for (let i = 0; i < population.length; i++) {
+    let partnerA = p5.random(matingPool); //return DNA object
+    let partnerB = p5.random(matingPool); //return DNA object
+
+    // Step 3a: Crossover
+    let child = partnerA.crossover(partnerB);
+
+    // Step 3b: Mutation
+    child.mutate(mutationRate);
+
+    //Note that we are overwriting the population with the new children. 
+    //When draw() loops, we will perform all the same steps with new population of children
+    population[i] = child;
+
+  }
+
+  let everything = "";
+  for (let i = 0; i < population.length; i++) {
+    everything += population[i].getPhrase() + "     ";
+  }
+
+
+  p5.background(255);
+  p5.textFont("Courier");
+  p5.textSize(12);
+  p5.text(everything, 12, 0, p5.width, p5.height);
 }
 
 
