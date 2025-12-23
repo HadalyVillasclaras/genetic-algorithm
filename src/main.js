@@ -3,7 +3,7 @@ import p5js from 'p5';
 
 let p5;
 let lastGenerationTime = 0;
-let generationInterval = 0;
+let generationInterval = 1000;
 
 // Genetic Algorithm, Evolving text
 // Demonstration of using genetic algorithm to perform a search
@@ -62,6 +62,7 @@ function draw() {
       individual.calculateFitness(target);
     }
 
+
     // Build mating pool
     let matingPool = [];
     for (let individual of population) {
@@ -75,6 +76,9 @@ function draw() {
 
     // Step 3: Reproduction
     for (let i = 0; i < population.length; i++) {
+      if (population[i].fitness === 1) {
+        continue
+      }
       let partnerA = p5.random(matingPool); //return DNA object
       let partnerB = p5.random(matingPool); //return DNA object
 
@@ -84,23 +88,44 @@ function draw() {
       // Step 3b: Mutation
       child.mutate(mutationRate);
 
-      //Note that we are overwriting the population with the new children. 
-      //When draw() loops, we will perform all the same steps with new population of children
+      //overwrite the population with the new children. 
       population[i] = child;
 
     }
+    console.log(population)
   }
 
   // --- RENDERING UI ---
-
-  let everything = "";
-  for (let i = 0; i < population.length; i++) {
-    everything += population[i].getIndividual() + "     ";
-  }
-
   p5.background(255);
   p5.textFont("Courier");
-  p5.text(everything, 10, 30, p5.width, p5.height);
+
+let columnX = 20;
+let lineY = 30;
+
+const lineHeight = 18;
+const columnSpacing = 160;
+
+for (let i = 0; i < population.length; i++) {
+  const individualText = population[i].getIndividual();
+
+  if (individualText === target) {
+    p5.fill(255, 0, 0);
+  } else {
+    p5.fill(0);
+  }
+    p5.text(individualText, columnX, lineY);
+
+    // next line
+    lineY += lineHeight;
+
+    // si se sale de la pantalla verticalmente,
+    // empieza una nueva columna
+    if (lineY > p5.height - 20) {
+      lineY = 30;
+      columnX += columnSpacing;
+    }
+  }
+
 }
 
 
