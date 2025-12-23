@@ -1,8 +1,11 @@
 import { DNA } from "./DNA.js";
 import p5js from 'p5';
-let p5;
 
-//Genetic Algorithm, Evolving text
+let p5;
+let lastGenerationTime = 0;
+let generationInterval = 0;
+
+// Genetic Algorithm, Evolving text
 // Demonstration of using genetic algorithm to perform a search
 
 /**
@@ -32,14 +35,14 @@ let p5;
  * 
  */
 
-let mutationRate = 0.01;
+let mutationRate = 0.005;
 let populationSize = 150;
 
 let population = [];
 let target = "to be or not to be";
 
 function setup() {
-  p5.createCanvas(700, 400);
+  p5.createCanvas(1000, 500);
 
   // Step 1: Population creation
   for (let i = 0; i < populationSize; i++) {
@@ -48,53 +51,57 @@ function setup() {
 }
 
 function draw() {
+  let now = p5.millis();
+  if (now - lastGenerationTime > generationInterval) {
+    lastGenerationTime = now;
 
-  // Step 2: Selection
-  // Calculate fitness
-  for (let phrase of population) {
-    phrase.calculateFitness(target);
-  }
+    // Step 2: Selection
+    // Calculate fitness
+    for (let individual of population) {
+      // add fitness prop to each population individual
+      individual.calculateFitness(target);
+    }
 
-  // Build mating pool
-  let matingPool = [];
-  for (let phrase of population) {
-    // Add each member n times according to its fitness score
-    let n = Math.floor(phrase.fitness * 100);
+    // Build mating pool
+    let matingPool = [];
+    for (let individual of population) {
+      // Add each member n times according to its fitness score
+      let n = Math.floor(individual.fitness * 100);
 
-    for (let j = 0; j < n; j++) {
-      matingPool.push(phrase);
+      for (let j = 0; j < n; j++) {
+        matingPool.push(individual);
+      }
+    }
+
+    // Step 3: Reproduction
+    for (let i = 0; i < population.length; i++) {
+      let partnerA = p5.random(matingPool); //return DNA object
+      let partnerB = p5.random(matingPool); //return DNA object
+
+      // Step 3a: Crossover
+      let child = partnerA.crossover(partnerB);
+
+      // Step 3b: Mutation
+      child.mutate(mutationRate);
+
+      //Note that we are overwriting the population with the new children. 
+      //When draw() loops, we will perform all the same steps with new population of children
+      population[i] = child;
+
     }
   }
 
-  // Step 3: Reproduction
-  for (let i = 0; i < population.length; i++) {
-    let partnerA = p5.random(matingPool); //return DNA object
-    let partnerB = p5.random(matingPool); //return DNA object
-
-    // Step 3a: Crossover
-    let child = partnerA.crossover(partnerB);
-
-    // Step 3b: Mutation
-    child.mutate(mutationRate);
-
-    //Note that we are overwriting the population with the new children. 
-    //When draw() loops, we will perform all the same steps with new population of children
-    population[i] = child;
-
-  }
+  // --- RENDERING UI ---
 
   let everything = "";
   for (let i = 0; i < population.length; i++) {
-    everything += population[i].getPhrase() + "     ";
+    everything += population[i].getIndividual() + "     ";
   }
-
 
   p5.background(255);
   p5.textFont("Courier");
-  p5.textSize(12);
-  p5.text(everything, 12, 0, p5.width, p5.height);
+  p5.text(everything, 10, 30, p5.width, p5.height);
 }
-
 
 
 new p5js((instance) => {

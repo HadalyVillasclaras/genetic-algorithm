@@ -32,24 +32,23 @@ export class DNA {
     this.fitness = score / target.length;
   }
 
-   getPhrase() {
+   getIndividual() {
     return this.genes.join("");
   }
   
   crossover(partner) {
     // The child is a new instance of DNA
-    // Note that the genes are generated randomly in DNA constructor,
-    // but the crossover function will override the array
-    let child = new DNA(this.genes.length);
+    // Note that the genes are generated randomly in DNA constructor, but the crossover function will override the array
+    let child = new DNA(this.genes.length); //genes.length = target.length
 
     // Pick a random midpoint in the genes array
     let midpoint = Math.floor(Math.random() * this.genes.length);
 
     for(let i = 0; i < this.genes.length; i++) {
       if (i > midpoint) {
-        child.genes[i] = this.genes[i];
+        child.genes[i] = this.genes[i]; //partnerA genes
       } else {
-        child.genes[i] = partner.genes[i];
+        child.genes[i] = partner.genes[i]; //partnerB genes
       }
     }
 
@@ -62,7 +61,6 @@ export class DNA {
         //{!1} Mutation, a new random character
         this.genes[i] = randomCharacter();
       }
-      
     }
   }
 }
