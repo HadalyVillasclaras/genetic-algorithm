@@ -1,9 +1,10 @@
 import { DNA } from "./DNA.js";
 import p5js from 'p5';
+import Population from "./Population.js";
 
 let p5;
 let lastGenerationTime = 0;
-let generationInterval = 1000;
+let generationInterval = 500;
 
 // Genetic Algorithm, Evolving text
 // Demonstration of using genetic algorithm to perform a search
@@ -38,16 +39,14 @@ let generationInterval = 1000;
 let mutationRate = 0.005;
 let populationSize = 150;
 
-let population = [];
+let population;
 let target = "to be or not to be";
 
 function setup() {
   p5.createCanvas(1000, 500);
 
   // Step 1: Population creation
-  for (let i = 0; i < populationSize; i++) {
-    population[i] = new DNA(target.length);
-  }
+  population = new Population(target, mutationRate, populationSize)
 }
 
 function draw() {
@@ -56,63 +55,34 @@ function draw() {
     lastGenerationTime = now;
 
     // Step 2: Selection
-    // Calculate fitness
-    for (let individual of population) {
-      // add fitness prop to each population individual
-      individual.calculateFitness(target);
-    }
+    // --Calculate fitness
+    population.calcFitness();
 
-
-    // Build mating pool
-    let matingPool = [];
-    for (let individual of population) {
-      // Add each member n times according to its fitness score
-      let n = Math.floor(individual.fitness * 100);
-
-      for (let j = 0; j < n; j++) {
-        matingPool.push(individual);
-      }
-    }
+    // --Build mating pool
+    population.createMatingPool();
 
     // Step 3: Reproduction
-    for (let i = 0; i < population.length; i++) {
-      if (population[i].fitness === 1) {
-        continue
-      }
-      let partnerA = p5.random(matingPool); //return DNA object
-      let partnerB = p5.random(matingPool); //return DNA object
-
-      // Step 3a: Crossover
-      let child = partnerA.crossover(partnerB);
-
-      // Step 3b: Mutation
-      child.mutate(mutationRate);
-
-      //overwrite the population with the new children. 
-      population[i] = child;
-
-    }
-    console.log(population)
+    population.createGeneration();
   }
 
   // --- RENDERING UI ---
   p5.background(255);
   p5.textFont("Courier");
 
-let columnX = 20;
-let lineY = 30;
+  let columnX = 20;
+  let lineY = 30;
 
-const lineHeight = 18;
-const columnSpacing = 160;
+  const lineHeight = 18;
+  const columnSpacing = 160;
 
-for (let i = 0; i < population.length; i++) {
-  const individualText = population[i].getIndividual();
+  for (let i = 0; i < population.population.length; i++) {
+    const individualText = population.population[i].getIndividual();
 
-  if (individualText === target) {
-    p5.fill(255, 0, 0);
-  } else {
-    p5.fill(0);
-  }
+    if (individualText === target) {
+      p5.fill(255, 0, 0);
+    } else {
+      p5.fill(0);
+    }
     p5.text(individualText, columnX, lineY);
 
     // next line
