@@ -4,7 +4,7 @@ import Population from "./Population.js";
 
 let p5;
 let lastGenerationTime = 0;
-let generationInterval = 500;
+let generationInterval = 0;
 
 // Genetic Algorithm, Evolving text
 // Demonstration of using genetic algorithm to perform a search
@@ -43,7 +43,7 @@ let population;
 let target = "to be or not to be";
 
 function setup() {
-  p5.createCanvas(1000, 500);
+  p5.createCanvas(1200, 580);
 
   // Step 1: Population creation
   population = new Population(target, mutationRate, populationSize)
@@ -65,24 +65,68 @@ function draw() {
     population.createGeneration();
   }
 
-  // --- RENDERING UI ---
+  // -------- UI ---------
   p5.background(255);
+  p5.fill(0);
   p5.textFont("Courier");
 
-  let columnX = 20;
+  const individuals = population.getIndividuals();
+
+  // Best individual
+  let bestFitness = -1;
+  let bestText = "";
+
+  for (let i = 0; i < individuals.length; i++) {
+    if (individuals[i].fitness > bestFitness) {
+      bestFitness = individuals[i].fitness;
+      bestText = individuals[i].getIndividual();
+    }
+  }
+
+  p5.textSize(12);
+  p5.text("Best phrase:", 10, 32);
+
+  p5.textSize(24);
+  p5.text(bestText, 10, 64);
+
+  // Stats
+  p5.textSize(12);
+
+  let statsText =
+    "total generations:     " + population.getGenerationCount() + "\n" +
+    "average fitness:       " + population.getAverageFitness() + "\n" +
+    "total population:      " + individuals.length + "\n" +
+    "mutation rate:         " + population.getMutationRate();
+
+  p5.text(statsText, 10, 96);
+
+  // All individuals
+  renderIndividuals(individuals, target);
+}
+
+
+new p5js((instance) => {
+  p5 = instance;
+  p5.setup = setup;
+  p5.draw = draw;
+});
+
+function renderIndividuals(individuals, target) {
+  let columnX = 300;
   let lineY = 30;
 
   const lineHeight = 18;
   const columnSpacing = 160;
 
-  for (let i = 0; i < population.population.length; i++) {
-    const individualText = population.population[i].getIndividual();
+  for (let i = 0; i < individuals.length; i++) {
+    const individualText = individuals[i].getIndividual();
 
     if (individualText === target) {
       p5.fill(255, 0, 0);
     } else {
       p5.fill(0);
     }
+
     p5.text(individualText, columnX, lineY);
 
     // next line
@@ -95,13 +139,5 @@ function draw() {
       columnX += columnSpacing;
     }
   }
-
 }
-
-
-new p5js((instance) => {
-  p5 = instance;
-  p5.setup = setup;
-  p5.draw = draw;
-});
 

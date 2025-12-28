@@ -71,8 +71,33 @@ export default class Population {
       // Overwrite population with new children
       this.population[i] = child;
     }
+
+    this.generations++;
   }
 
+  getIndividuals() {
+    return this.population;
+  }
+
+  getGenerationCount() {
+    return this.generations;
+  }
+
+  getAverageFitness() {
+    let total = 0;
+    for (let i = 0; i < this.population.length; i++) {
+      total += this.population[i].fitness;
+    }
+
+    return total / (this.population.length);
+  }
+  getTarget() {
+    return this.target;
+  }
+
+  getMutationRate() {
+    return this.mutationRate;
+  }
 
   isFinished() {
     return this.finished;
