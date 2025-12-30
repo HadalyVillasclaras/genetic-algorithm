@@ -25,7 +25,7 @@ export default class Population {
     }
 
     // Step 2: Calculate fitness
-    this.calcFitness()
+    this.calcFitness();
   }
 
 
@@ -51,6 +51,7 @@ export default class Population {
   createGeneration() {
     //Step 3: Reproduction
     for (let i = 0; i < this.population.length; i++) {
+
       if (this.population[i].fitness === 1) {
         continue;
       }
@@ -72,6 +73,7 @@ export default class Population {
       this.population[i] = child;
     }
 
+    // this.calcFitness();
     this.generations++;
   }
 
@@ -89,8 +91,10 @@ export default class Population {
       total += this.population[i].fitness;
     }
 
+    
     return total / (this.population.length);
   }
+
   getTarget() {
     return this.target;
   }

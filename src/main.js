@@ -55,14 +55,14 @@ function draw() {
     lastGenerationTime = now;
 
     // Step 2: Selection
-    // --Calculate fitness
-    population.calcFitness();
-
     // --Build mating pool
     population.createMatingPool();
 
     // Step 3: Reproduction
     population.createGeneration();
+
+    // --Calculate fitness
+    population.calcFitness();
   }
 
   // -------- UI ---------
@@ -94,7 +94,7 @@ function draw() {
 
   let statsText =
     "total generations:     " + population.getGenerationCount() + "\n" +
-    "average fitness:       " + population.getAverageFitness() + "\n" +
+    "average fitness:       " + population.getAverageFitness().toFixed(2) + "\n" +
     "total population:      " + individuals.length + "\n" +
     "mutation rate:         " + population.getMutationRate();
 
