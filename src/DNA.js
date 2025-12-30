@@ -29,7 +29,9 @@ export class DNA {
     }
 
     // fitness is equal to correct no. characters / total characters
-    this.fitness = score / target.length;
+    let normalized = score / target.length;
+    this.fitness = normalized;
+    // this.fitness = Math.pow(normalized, 2); // to be closer to the objetive has more value than to be far away
   }
 
    getIndividual() {
