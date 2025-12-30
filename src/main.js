@@ -129,11 +129,9 @@ function renderIndividuals(individuals, target) {
 
     p5.text(individualText, columnX, lineY);
 
-    // next line
     lineY += lineHeight;
 
-    // si se sale de la pantalla verticalmente,
-    // empieza una nueva columna
+    // start new column
     if (lineY > p5.height - 20) {
       lineY = 30;
       columnX += columnSpacing;

@@ -73,8 +73,9 @@ export default class Population {
       this.population[i] = child;
     }
 
-    // this.calcFitness();
-    this.generations++;
+    if (!this.isFinished()) {
+      this.generations++;
+    }
   }
 
   getIndividuals() {
@@ -91,8 +92,14 @@ export default class Population {
       total += this.population[i].fitness;
     }
 
-    
-    return total / (this.population.length);
+
+    total = total / (this.population.length);
+
+    if (total == 1) {
+      this.finished = true;
+    }
+
+    return total;
   }
 
   getTarget() {
