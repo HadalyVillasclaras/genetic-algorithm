@@ -1,9 +1,21 @@
 class Rocket {
-  constructor(xPos, yPos) {
+  constructor(xPos, yPos, dna) {
+    this.dna = dna;
     this.fitness = 0;
+
+    this.geneCounter = 0;
+
     this.position = { x: xPos, y: yPos };
     this.velocity = { x: 0, y: 0 };
     this.acceleration = { x: 0, y: 0 };
+  }
+
+  run() {
+    this.applyForce(this.dna.genes[this.geneCounter]);
+    this.geneCounter++;
+
+    //update rocket physics
+    this.update();
   }
 
   applyForce(force) {

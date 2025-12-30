@@ -11,18 +11,36 @@
 
 
 export class DNA {
-  constructor (length) {
+  constructor(lifeSpan) {
     this.genes = [];
     this.fitness = 0;
+    this.maxForce = 0.1;
 
-    for(let i = 0; i < length; i++) {
-      this.genes[i] = randomCharacter();
+    for (let i = 0; i < lifeSpan; i++) {
+      //  random direction (angle in radians)
+      const angle = Math.random() * Math.PI * 2;
+
+      // Convert angle to a unit vector
+      let force = {
+        x: Math.cos(angle),
+        y: Math.sin(angle)
+      };
+
+      //random magnitude for the force 
+      const magnitude = Math.random() * this.maxForce;
+
+      // Scale direction by magnitude
+      force.x *= magnitude;
+      force.y *= magnitude;
+
+      // Store this force as the gene for the frame
+      this.genes.push(force);
     }
   }
 
   calculateFitness(target) {
     let score = 0;
-    for(let i = 0; i < this.genes.length; i++) {
+    for (let i = 0; i < this.genes.length; i++) {
       if (this.genes[i] === target.charAt(i)) {
         score++;
       }
@@ -34,10 +52,10 @@ export class DNA {
     // this.fitness = Math.pow(normalized, 2); // to be closer to the objetive has more value than to be far away
   }
 
-   getIndividual() {
+  getIndividual() {
     return this.genes.join("");
   }
-  
+
   crossover(partner) {
     // The child is a new instance of DNA
     // Note that the genes are generated randomly in DNA constructor, but the crossover function will override the array
@@ -46,7 +64,7 @@ export class DNA {
     // Pick a random midpoint in the genes array
     let midpoint = Math.floor(Math.random() * this.genes.length);
 
-    for(let i = 0; i < this.genes.length; i++) {
+    for (let i = 0; i < this.genes.length; i++) {
       if (i > midpoint) {
         child.genes[i] = this.genes[i]; //partnerA genes
       } else {
@@ -70,11 +88,11 @@ export class DNA {
 function randomCharacter() {
   let minRange = 32;
   let maxRange = 127;
-  let totalNumbers = maxRange -  minRange; //95
+  let totalNumbers = maxRange - minRange; //95
   let initialValueToStartCounting = minRange;
 
   //get a number between 32 and 127
-  let character = Math.floor(Math.random() * (totalNumbers)) + initialValueToStartCounting; 
+  let character = Math.floor(Math.random() * (totalNumbers)) + initialValueToStartCounting;
   // String.fromCharCode is a JS method that converts a number into its corresponding character in the ASCII
   return String.fromCharCode(character);
 }

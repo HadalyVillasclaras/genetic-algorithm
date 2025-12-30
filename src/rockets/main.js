@@ -5,15 +5,14 @@ let p5;
 let lastGenerationTime = 0;
 let generationInterval = 0;
 
-// Genetic Algorithm, Evolving text
-// Demonstration of using genetic algorithm to perform a search
+// Genetic Algorithm, Rocket
+
 
 /**
  * setup()
  * Step 1: The Population 
  *  Create an empty population (an array of ArrayList)
  *  Fill it with DNA encoded objects (pick random values to start)
- * 
  * 
  * draw()
  * Step 2: Selection 
